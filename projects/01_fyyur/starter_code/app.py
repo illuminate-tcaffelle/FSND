@@ -12,6 +12,7 @@ import logging
 from logging import Formatter, FileHandler
 from flask_wtf import Form
 from forms import *
+from flask_migrate import Migrate
 #----------------------------------------------------------------------------#
 # App Config.
 #----------------------------------------------------------------------------#
@@ -21,12 +22,18 @@ moment = Moment(app)
 app.config.from_object('config')
 db = SQLAlchemy(app)
 
+migrate = Migrate(app,db)
+
 # TODO: connect to a local postgresql database
 
 #----------------------------------------------------------------------------#
 # Models.
 #----------------------------------------------------------------------------#
 
+showListings = db.Table('showListings',
+    db.Column('artist_id',db.Integer,db.ForeignKey('Artist.id'),primary_key=True),
+    db.Column('venue_id',db.Integer,db.ForeignKey('Venue.id'),primary_key=True)
+)
 class Venue(db.Model):
     __tablename__ = 'Venue'
 
@@ -38,7 +45,8 @@ class Venue(db.Model):
     phone = db.Column(db.String(120))
     image_link = db.Column(db.String(500))
     facebook_link = db.Column(db.String(120))
-
+    upcoming_shows = db.Column(db.Integer(),nullable = False)
+    artist = db.relationship('Artist',secondary=showListings,backref=db.backref('venue',lazy=True))
     # TODO: implement any missing fields, as a database migration using Flask-Migrate
 
 class Artist(db.Model):
@@ -56,6 +64,7 @@ class Artist(db.Model):
     # TODO: implement any missing fields, as a database migration using Flask-Migrate
 
 # TODO Implement Show and Artist models, and complete all model relationships and properties, as a database migration.
+
 
 #----------------------------------------------------------------------------#
 # Filters.
