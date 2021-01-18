@@ -13,3 +13,5 @@ DEBUG = True
 SQLALCHEMY_DATABASE_URI = 'postgres://postgres:illuminate@localhost:5432/fyyur'
 SQLALCHEMY_TRACK_MODIFICATIONS = False
 
+FLASK_APP="app"
+FLASK_ENV="development"
